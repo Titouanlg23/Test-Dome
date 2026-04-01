@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Analyse système</title>
+
+<style>
+body{
+ background:black;
+ color:lime;
+ font-family:monospace;
+ padding:20px;
+ font-size:24px;
+}
+
+h2{
+ font-size:32px;
+}
+
+#terminal{
+ white-space:pre-line;
+}
+
+#progressbar{
+ width:100%;
+ background:#111;
+ border:2px solid lime;
+ margin-top:20px;
+}
+
+#bar{
+ width:0%;
+ height:30px;
+ background:lime;
+}
+
+#countdown{
+ font-size:40px;
+ color:red;
+ margin-top:20px;
+}
+</style>
+</head>
+
+<body onclick="document.documentElement.requestFullscreen()">
+
+<h2>Initialisation du module d'analyse...</h2>
+
+<div id="terminal"></div>
+
+<div id="progressbar">
+<div id="bar"></div>
+</div>
+
+<div id="countdown"></div>
+
+<script>
+
+let terminal = document.getElementById("terminal");
+let bar = document.getElementById("bar");
+let countdown = document.getElementById("countdown");
+
+let messages = [
+"Connexion au serveur sécurisé...",
+"Analyse de l'appareil détecté...",
+"Identification du système...",
+"Appareil : " + navigator.userAgent,
+"Recherche de données sensibles...",
+"Analyse des photos...",
+"Analyse des contacts...",
+"Extraction des mots de passe WiFi...",
+"Accès au microphone...",
+"Transmission des données...",
+"Accès administrateur obtenu..."
+];
+
+let i = 0;
+let progress = 0;
+
+function vibrate(){
+ if(navigator.vibrate){
+  navigator.vibrate(200);
+ }
+}
+
+function typeLine(text, callback){
+ let j = 0;
+ let interval = setInterval(()=>{
+  terminal.innerHTML += text[j];
+  j++;
+  if(j >= text.length){
+   clearInterval(interval);
+   terminal.innerHTML += "<br>";
+   setTimeout(callback,150);
+  }
+ },5); /* écriture très rapide */
+}
+
+function next(){
+ if(i < messages.length){
+  vibrate();
+  typeLine(messages[i], ()=>{
+   progress += 10;
+   bar.style.width = progress + "%";
+   i++;
+   next();
+  });
+ }else{
+  setTimeout(startCountdown,500);
+ }
+}
+
+function startCountdown(){
+
+ terminal.innerHTML += "<br>⚠️ VIRUS DETECTE ⚠️<br>";
+ terminal.innerHTML += "Suppression des données dans :<br>";
+
+ let time = 10;
+
+ countdown.innerHTML = time;
+
+ let timer = setInterval(()=>{
+
+  vibrate();
+
+  time--;
+  countdown.innerHTML = time;
+
+  if(time <= 0){
+   clearInterval(timer);
+
+   countdown.innerHTML = "";
+   terminal.innerHTML += "<br>😄 Relax ! C'était une blague.<br>";
+   terminal.innerHTML += "Aucune donnée n'a été copiée.";
+  }
+
+ },1000);
+}
+
+next();
+
+</script>
+
+</body>
+</html>
